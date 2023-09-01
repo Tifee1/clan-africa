@@ -11,31 +11,13 @@ function App() {
     name: '',
     email: '',
     phone: '',
-    pricing: { name: 'arcade', monthPrice: '9', yearPrice: '90' },
+    pricing: { name: 'arcade', monthPrice: 9, yearPrice: 90 },
     type: 'monthly',
-    addons: [
-      {
-        selected: null,
-        name: 'online service',
-        text: 'Access to multiplayer games',
-        monthPrice: 1,
-        yearPrice: 10,
-      },
-      {
-        selected: null,
-        name: 'larger storage',
-        text: 'Extra 1TB of cloud save',
-        monthPrice: 2,
-        yearPrice: 20,
-      },
-      {
-        selected: null,
-        name: 'customizable profile',
-        text: 'Custom theme on your profile',
-        monthPrice: 2,
-        yearPrice: 20,
-      },
-    ],
+    addons: {
+      onlineService: false,
+      higherStorage: false,
+      customizableProfile: false,
+    },
   })
   const [currentStep, setCurrentStep] = useState(1)
   const [finished, setFinished] = useState(false)

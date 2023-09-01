@@ -1,18 +1,21 @@
 const StepThreeForm = ({ values, setFieldValue }) => {
   const addOnOptions = [
     {
+      id: 'onlineService',
       name: 'online service',
       text: 'Access to multiplayer games',
       monthPrice: 1,
       yearPrice: 10,
     },
     {
+      id: 'higherStorage',
       name: 'larger storage',
       text: 'Extra 1TB of cloud save',
       monthPrice: 2,
       yearPrice: 20,
     },
     {
+      id: 'customizableProfile',
       name: 'customizable profile',
       text: 'Custom theme on your profile',
       monthPrice: 2,
@@ -31,31 +34,22 @@ const StepThreeForm = ({ values, setFieldValue }) => {
             <label key={i} className='relative'>
               <article
                 className={`grid grid-cols-[auto,1fr] items-center gap-6 cursor-pointer 
-                border p-4 rounded-md`}
+                border p-4 rounded-md ${
+                  values.addons[item.id]
+                    ? 'border-marine bg-pastel/20'
+                    : 'border-gray'
+                }`}
               >
                 {/* Checkbox column */}
                 <div>
                   <input
                     type='checkbox'
-                    name='pricing'
-                    value={JSON.stringify(item)}
-                    // checked={values.pricing.includes(item.name)}
-                    // onChange={(e) => {
-                    //   const selectedPricing = JSON.parse(e.target.value)
-                    //   if (e.target.checked) {
-                    //     setFieldValue('pricing', [
-                    //       ...values.pricing,
-                    //       selectedPricing.name,
-                    //     ])
-                    //   } else {
-                    //     setFieldValue(
-                    //       'pricing',
-                    //       values.pricing.filter(
-                    //         (name) => name !== selectedPricing.name
-                    //       )
-                    //     )
-                    //   }
-                    // }}
+                    name={`addons[${item.id}]`}
+                    checked={values.addons[item.id]}
+                    onChange={(e) => {
+                      const isChecked = e.target.checked
+                      setFieldValue(`addons[${item.id}]`, isChecked)
+                    }}
                   />
                 </div>
 
