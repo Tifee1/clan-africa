@@ -1,3 +1,4 @@
+import PricingOption from './PricingOption'
 import Toggle from 'react-toggle'
 import 'react-toggle/style.css'
 
@@ -7,7 +8,8 @@ const StepTwoForm = ({ values, handleChange, setFieldValue }) => {
     { name: 'advanced', monthPrice: '12', yearPrice: '120' },
     { name: 'pro', monthPrice: '15', yearPrice: '150' },
   ]
-  const handleSub = (e) => {
+
+  const handleTypeChange = (e) => {
     if (e.target.checked) {
       setFieldValue('type', 'yearly')
     } else {
@@ -22,49 +24,14 @@ const StepTwoForm = ({ values, handleChange, setFieldValue }) => {
         You have the option of monthly or yearly billing
       </h5>
       <div className='py-12 grid gap-4 md:grid-cols-3 items-center'>
-        {pricingOptions.map((item, i) => {
-          return (
-            <label key={i} className='relative'>
-              <input
-                type='radio'
-                name='pricing'
-                value={JSON.stringify(item)}
-                checked={values.pricing === item.name}
-                onChange={(e) => {
-                  setFieldValue('pricing', JSON.parse(e.target.value))
-                }}
-                className='hidden'
-              />
-              <article
-                className={`${
-                  values.pricing.name === item.name
-                    ? 'border-marine bg-pastel/20'
-                    : 'border-gray'
-                } cursor-pointer border p-4 rounded-md`}
-              >
-                <div className='grid grid-cols-[auto,1fr] md:grid-cols-1 gap-4 md:gap-20 items-center'>
-                  <img
-                    src={`/assets/images/icon-${item.name}.svg`}
-                    alt={item.name}
-                  />
-                  <div className='grid gap-2'>
-                    <h3 className='font-bold'>{item.name}</h3>
-                    <span className='text-gray font-semibold'>
-                      {values.type === 'monthly'
-                        ? `$${item.monthPrice}/mo`
-                        : `$${item.yearPrice}/yr`}
-                    </span>
-                    {values.type === 'yearly' && (
-                      <span className='text-marine font-semibold'>
-                        2 months free
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </article>
-            </label>
-          )
-        })}
+        {pricingOptions.map((item, i) => (
+          <PricingOption
+            key={i}
+            item={item}
+            values={values}
+            setFieldValue={setFieldValue}
+          />
+        ))}
       </div>
 
       <div className='flex gap-8 justify-center font-semibold'>
@@ -78,9 +45,7 @@ const StepTwoForm = ({ values, handleChange, setFieldValue }) => {
         <Toggle
           defaultChecked={values.type === 'yearly'}
           icons={false}
-          onChange={(e) => {
-            handleSub(e)
-          }}
+          onChange={handleTypeChange}
         />
         <span
           className={`${
@@ -93,4 +58,5 @@ const StepTwoForm = ({ values, handleChange, setFieldValue }) => {
     </div>
   )
 }
+
 export default StepTwoForm

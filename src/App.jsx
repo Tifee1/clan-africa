@@ -28,6 +28,32 @@ function App() {
     { step: 3, text: 'ADD-ONS' },
     { step: 4, text: 'Summary' },
   ]
+  const handleStepChange = (newStep) => {
+    setCurrentStep(Math.min(Math.max(newStep, 1), 4))
+  }
+  const validateForm = (values) => {
+    const errors = {}
+    if (!values.name) {
+      errors.name = 'This field is Required'
+    } else if (!values.email) {
+      errors.email = 'This field is Required'
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
+      errors.email = 'Invalid Email Address'
+    } else if (!values.phone) {
+      errors.phone = 'This field is Required'
+    }
+    return errors
+  }
+
+  const handleSubmit = (values) => {
+    if (currentStep !== 4) {
+      setCurrentStep((old) => Math.min(old + 1, 4))
+    } else {
+      console.log(values)
+      setFinished(true)
+      setFormData(formData)
+    }
+  }
 
   return (
     <main className='relative pt-20'>
@@ -81,78 +107,42 @@ function App() {
         ) : (
           <Formik
             initialValues={formData}
-            validate={(values) => {
-              const errors = {}
-              if (!values.name) {
-                errors.name = 'This field is Required'
-              } else if (!values.email) {
-                errors.email = 'This field is Required'
-              } else if (
-                !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-              ) {
-                errors.email = 'Invalid Email Address'
-              } else if (!values.phone) {
-                errors.phone = 'This field is Required'
-              }
-              return errors
-            }}
-            onSubmit={(values) => {
-              if (currentStep !== 4) {
-                setCurrentStep((old) => {
-                  let newValue = old + 1
-                  if (newValue > 4) {
-                    newValue = 4
-                  }
-                  return newValue
-                })
-                return
-              }
-
-              console.log(values)
-              setFinished(true)
-              setFormData({})
-            }}
+            validate={validateForm}
+            onSubmit={handleSubmit}
           >
-            {({
-              values,
-              errors,
-              touched,
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              isSubmitting,
-              setFieldValue,
-              /* and other goodies */
-            }) => (
-              <form onSubmit={handleSubmit} className='grid gap-4 pt-8 w-full'>
+            {(formikProps) => (
+              <form
+                onSubmit={formikProps.handleSubmit}
+                className='grid gap-4 pt-8 w-full'
+              >
+                {/* Render appropriate form components based on currentStep */}
                 {currentStep === 1 && (
                   <StepOneForm
-                    errors={errors}
-                    touched={touched}
-                    values={values}
-                    handleBlur={handleBlur}
-                    handleChange={handleChange}
+                    errors={formikProps.errors}
+                    touched={formikProps.touched}
+                    values={formikProps.values}
+                    handleBlur={formikProps.handleBlur}
+                    handleChange={formikProps.handleChange}
                   />
                 )}
                 {currentStep === 2 && (
                   <StepTwoForm
-                    values={values}
-                    handleChange={handleChange}
-                    setFieldValue={setFieldValue}
+                    values={formikProps.values}
+                    handleChange={formikProps.handleChange}
+                    setFieldValue={formikProps.setFieldValue}
                   />
                 )}
                 {currentStep === 3 && (
                   <StepThreeForm
-                    values={values}
-                    handleChange={handleChange}
-                    setFieldValue={setFieldValue}
+                    values={formikProps.values}
+                    handleChange={formikProps.handleChange}
+                    setFieldValue={formikProps.setFieldValue}
                   />
                 )}
-
                 {currentStep === 4 && (
                   <StepFourForm
-                    values={values}
-                    setCurrentStep={setCurrentStep}
+                    values={formikProps.values}
+                    setCurrentStep={handleStepChange}
                   />
                 )}
                 <div className='flex justify-between items-center'>

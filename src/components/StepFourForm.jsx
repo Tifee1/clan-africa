@@ -1,7 +1,15 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
+
+const AddOn = ({ title, price }) => (
+  <div className='flex justify-between font-medium'>
+    <h4 className='text-gray'>{title}</h4>
+    <span className='text-black/70'>+${price}</span>
+  </div>
+)
 
 const StepFourForm = ({ values, setCurrentStep }) => {
   const [totalSum, setTotalSum] = useState(0)
+
   const addOnOptions = [
     {
       id: 'onlineService',
@@ -27,31 +35,18 @@ const StepFourForm = ({ values, setCurrentStep }) => {
   ]
 
   useEffect(() => {
-    let total =
+    let total = parseInt(
       values.type === 'monthly'
         ? values.pricing.monthPrice
         : values.pricing.yearPrice
-    if (values.type === 'monthly') {
-      if (values.addons.onlineService) {
-        total = parseInt(total) + 1
+    )
+
+    addOnOptions.forEach((addOn) => {
+      if (values.addons[addOn.id]) {
+        total += values.type === 'monthly' ? addOn.monthPrice : addOn.yearPrice
       }
-      if (values.addons.higherStorage) {
-        total = parseInt(total) + 2
-      }
-      if (values.addons.customizableProfile) {
-        total = parseInt(total) + 2
-      }
-    } else {
-      if (values.addons.onlineService) {
-        total = parseInt(total) + 10
-      }
-      if (values.addons.higherStorage) {
-        total = parseInt(total) + 20
-      }
-      if (values.addons.customizableProfile) {
-        total = parseInt(total) + 20
-      }
-    }
+    })
+
     setTotalSum(total)
   }, [values])
 
@@ -79,37 +74,25 @@ const StepFourForm = ({ values, setCurrentStep }) => {
           <h4>
             $
             {values.type === 'monthly'
-              ? `${values.pricing['monthPrice']}/mo`
-              : `${values.pricing['yearPrice']}/yr`}
+              ? `${values.pricing.monthPrice}/mo`
+              : `${values.pricing.yearPrice}/yr`}
           </h4>
         </div>
         <hr className='bg-gray text-gray border-gray' />
-        {values.addons['onlineService'] && (
-          <div className='flex justify-between font-medium'>
-            <h4 className='text-gray'>Online service</h4>
-            <span className='text-black/70'>
-              +$
-              {values.type === 'monthly' ? '1/mo' : '10/yr'}
-            </span>
-          </div>
-        )}
-        {values.addons['higherStorage'] && (
-          <div className='flex justify-between font-medium'>
-            <h4 className='text-gray'>Larger Storage</h4>
-            <span className='text-black/70'>
-              +$
-              {values.type === 'monthly' ? '2/mo' : '20/yr'}
-            </span>
-          </div>
-        )}
-        {values.addons['customizableProfile'] && (
-          <div className='flex justify-between font-medium'>
-            <h4 className='text-gray'>Customizable Profile</h4>
-            <span className='text-black/70'>
-              +$
-              {values.type === 'monthly' ? '2/mo' : '20/yr'}
-            </span>
-          </div>
+
+        {addOnOptions.map(
+          (addOn) =>
+            values.addons[addOn.id] && (
+              <AddOn
+                key={addOn.id}
+                title={addOn.name}
+                price={
+                  values.type === 'monthly'
+                    ? `${addOn.monthPrice}/mo`
+                    : `${addOn.yearPrice}/yr`
+                }
+              />
+            )
         )}
       </article>
       <div className='flex justify-between items-center font-medium'>
@@ -117,10 +100,11 @@ const StepFourForm = ({ values, setCurrentStep }) => {
           Total (per {values.type === 'monthly' ? 'month' : 'year'})
         </h4>
         <span className='text-marine text-lg'>
-          +${totalSum}/{values.pricing === 'monthly' ? 'mo' : 'yr'}
+          +${totalSum}/{values.type === 'monthly' ? 'mo' : 'yr'}
         </span>
       </div>
     </div>
   )
 }
+
 export default StepFourForm

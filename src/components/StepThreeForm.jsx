@@ -1,3 +1,5 @@
+import AddOnOption from './AddOnOption'
+
 const StepThreeForm = ({ values, setFieldValue }) => {
   const addOnOptions = [
     {
@@ -22,6 +24,7 @@ const StepThreeForm = ({ values, setFieldValue }) => {
       yearPrice: 20,
     },
   ]
+
   return (
     <div className='py-16 px-2 sm:px-16'>
       <h3 className='font-bold text-3xl'>Pick add-ons</h3>
@@ -29,48 +32,17 @@ const StepThreeForm = ({ values, setFieldValue }) => {
         Add-ons help enhance your gaming experience
       </h5>
       <div className='py-12 grid gap-4 items-center'>
-        {addOnOptions.map((item, i) => {
-          return (
-            <label key={i} className='relative'>
-              <article
-                className={`grid grid-cols-[auto,1fr] items-center gap-6 cursor-pointer 
-                border p-4 rounded-md ${
-                  values.addons[item.id]
-                    ? 'border-marine bg-pastel/20'
-                    : 'border-gray'
-                }`}
-              >
-                {/* Checkbox column */}
-                <div>
-                  <input
-                    type='checkbox'
-                    name={`addons[${item.id}]`}
-                    checked={values.addons[item.id]}
-                    onChange={(e) => {
-                      const isChecked = e.target.checked
-                      setFieldValue(`addons[${item.id}]`, isChecked)
-                    }}
-                  />
-                </div>
-
-                {/* Content column */}
-                <div className='flex items-center justify-between'>
-                  <div className='grid gap-2'>
-                    <h3 className='font-bold'>{item.name}</h3>
-                    <span className='text-gray font-semibold'>{item.text}</span>
-                  </div>
-                  <h4 className='text-marine font-semibold'>
-                    {values.type === 'monthly'
-                      ? `$${item.monthPrice}/mo`
-                      : `$${item.yearPrice}/yr`}
-                  </h4>
-                </div>
-              </article>
-            </label>
-          )
-        })}
+        {addOnOptions.map((item, i) => (
+          <AddOnOption
+            key={i}
+            item={item}
+            values={values}
+            setFieldValue={setFieldValue}
+          />
+        ))}
       </div>
     </div>
   )
 }
+
 export default StepThreeForm
